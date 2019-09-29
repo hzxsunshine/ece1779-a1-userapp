@@ -1,8 +1,11 @@
 from flask import Blueprint
+from webapp.models.user import User
 
-user = Blueprint('user', __name__)
+users = Blueprint('users', __name__)
 
 
-@user.route('/user')
+@users.route('/user')
 def getuser():
-    return "hello user"
+    user = User.query.all()
+    print(user)
+    return user
