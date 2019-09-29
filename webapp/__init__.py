@@ -10,4 +10,5 @@ def create_app():
     models.init_app(app)
     controllers.init_app(app)
     services.init_app(app)
+
     return app
