@@ -1,5 +1,5 @@
-from .main import *
-from .user import *
+from .mainController import *
+from .userController import *
 
 
 def init_app(app):

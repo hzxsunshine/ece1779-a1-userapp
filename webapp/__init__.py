@@ -6,6 +6,7 @@ def create_app():
     from webapp import models
     from webapp import controllers
     app = Flask(__name__)
+    app.config.from_object("config.Config")
     models.init_app(app)
     controllers.init_app(app)
     services.init_app(app)
