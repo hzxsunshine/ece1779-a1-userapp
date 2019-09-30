@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
+from webapp.repository import userRepository
+from . import bcrypt
 
 
 class CreateUserForm(FlaskForm):
@@ -16,6 +18,19 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_user = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+def get_user_by_email(email, password):
+    user = userRepository.get_user_by_email(email)
+    if user and bcrypt.check_password_hash(user.password, password):
+        return user
+    else:
+        return None
+
+
+def create_user(username, email, password):
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    userRepository.create_user(username, email, hashed_password)
 
 
 

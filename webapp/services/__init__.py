@@ -1,2 +1,12 @@
+from flask_bcrypt import Bcrypt
+
+bcrypt = Bcrypt()
+
+
 def init_app(app):
-  return
+    bcrypt.init_app(app)
+
+
+
+
+
