@@ -1,7 +1,29 @@
 {% extends "layout.html" %}
 {% block content %}
 
-  <div>
-   Hey Rita
+  <section>
+  <div class="container p-5">
+    <div class="row mb-5 text-center text-white">
+    </div>
+    <div class="row">
+      <div class="col-lg-5 mx-auto">
+        <div class="p-5 bg-white shadow rounded-lg"><img src="../static/images/upload.png" alt="" width="200" class="d-block mx-auto mb-4 rounded-pill">
+          <h4 class="text-center mb-4 text-muted">
+            Upload photos
+          </h4>
+
+          <div class="custom-file overflow-hidden rounded-pill mb-5">
+            <input id="customFile" type="file" class="custom-file-input rounded-pill" accept='image/*'>
+            <label for="customFile" class="custom-file-label rounded-pill">Choose file</label>
+          </div>
+          <h6 class="text-center mb-4 text-muted">
+            * Only image files are accepted.
+          </h6>
+
+        </div>
+      </div>
+    </div>
   </div>
+</section>
+
 {% endblock content %}
