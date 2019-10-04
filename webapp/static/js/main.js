@@ -1,4 +1,5 @@
 function fileSize(){
+  console.log(JSON.stringify(document.getElementById('image-file')));
     document.cookie = "fileSize=" + document.getElementById('image-file').files[0].size
   }
 
@@ -9,4 +10,3 @@ $('#image-file').on('change',function(){
     //replace the "Choose a file" label
     $(this).next('.custom-file-label').html(fileName);
 })
-

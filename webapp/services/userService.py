@@ -28,6 +28,10 @@ def get_user_by_email(email, password):
         return None
 
 
+def get_user_by_username(username):
+    return userRepository.get_user_by_username(username)
+
+
 def create_user(username, email, password):
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     userRepository.create_user(username, email, hashed_password)

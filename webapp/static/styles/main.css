@@ -159,3 +159,21 @@ body {
     border-color: #5f788a !important;
 }
 
+#image-name-label{
+    text-align: right;
+    clear: both;
+    float:left;
+    margin-right:15px;
+}
+
+input:invalid {
+  color: red;
+  /* turn to red as long as pattern do not match */
+}
+input:invalid+b:before {
+  content: 'Invalid Number';/* add text untill patterns matches */
+}
+input:invalid+b+[type="submit"] {
+  display: none; /* hide input submit untill pattern matches */
+}
+

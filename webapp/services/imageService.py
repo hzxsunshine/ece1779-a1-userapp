@@ -1,6 +1,19 @@
 from flask import current_app
+from flask_login import current_user
 import os
 from werkzeug.utils import secure_filename
+from webapp.repository import imageRepository
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import Length
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+
+
+class UploadImageForm(FlaskForm):
+    imageName = StringField('Image Name', validators=[Length(min=2, max=30)])
+    image = FileField('image', validators=[FileRequired()],
+                      render_kw={"id": "image-file"})
+    submit = SubmitField('Upload')
 
 
 def image_validation(filename):
@@ -26,7 +39,17 @@ def allowed_image_size(filesize):
         return False
 
 
-def save_image(image):
-    filename = secure_filename(image.filename)
-    image.save(os.path.join(current_app.config["IMAGES_UPLOAD_URL"], filename))
+def save_image(image, image_name):
+    filename = secure_filename(image_name)
+    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
+    if imageRepository.get_images_by_path(image_path):
+        return None
+    else:
+        image.data.save(image_path)
+        imageRepository.save_image(image_path, current_user.id)
+        return image_path
+
+
+def get_images_by_user():
+    return imageRepository.get_images_by_user_id(current_user.id)
 
