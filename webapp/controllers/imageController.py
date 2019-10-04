@@ -39,7 +39,7 @@ def get_upload_image_page():
             if image_path:
                 print("The image name is : " + image_name)
                 message = "Image " + image_name + " is uploaded successfully!"
-                return render_template("imageUpload.html", form=upload_image_form, error=message)
+                return render_template("imageUpload.html", form=upload_image_form, message=message)
             else:
                 error = 'Image already exists, please upload another image or type in a different image name.'
                 return render_template("imageUpload.html", form=upload_image_form, error=error)

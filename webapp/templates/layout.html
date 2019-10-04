@@ -37,7 +37,16 @@
       <div class="row">
         <div class="col-md-12">
           {% if error %}
-            <p class=error><strong>Error:</strong> {{ error }}
+            <div class="alert alert-warning alert-dismissible fade show">
+                <strong style="margin-right: 2rem">Warning!</strong> {{ error }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+          {% endif %}
+          {% if message %}
+            <div class="alert alert-success alert-dismissible fade show">
+                <strong style="margin-right: 2rem">Success!</strong> {{ message }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
           {% endif %}
           {% block content %}{% endblock %}
         </div>

@@ -47,7 +47,8 @@ def register():
                 userService.create_user(username=form.username.data, email=form.email.data, password=form.password.data)
                 message = "Registration successful, please login."
                 os.makedirs(os.path.join(current_app.config["IMAGES_UPLOAD_URL"], form.username.data))
-                return render_template('login.html', title='Login', form=form, error=message)
+                login_form = userService.LoginForm()
+                return render_template('login.html', title='Login', form=login_form, message=message)
             except IntegrityError:
                 error = "Create user failed, please try again later"
                 return render_template('register.html', title='Register', form=form, error=error)
