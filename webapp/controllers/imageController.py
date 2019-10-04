@@ -33,7 +33,7 @@ def get_upload_image_page():
                 error = "Image size exceeded maximum limit!"
                 return render_template("imageUpload.html", form=upload_image_form, error=error)
         image_name = upload_image_form.imageName.data + "." + image.data.filename.split('.')[1] \
-            if upload_image_form.imageName else image.data.filename
+            if upload_image_form.imageName and len(upload_image_form.imageName.data.strip()) != 0 else image.data.filename
         if imageService.image_validation(image_name):
             image_path = imageService.save_image(image, image_name)
             if image_path:
@@ -41,7 +41,8 @@ def get_upload_image_page():
                 message = "Image " + image_name + " is uploaded successfully!"
                 return render_template("imageUpload.html", form=upload_image_form, message=message)
             else:
-                error = 'Image already exists, please upload another image or type in a different image name.'
+                error = 'Image ' + image_name + \
+                        ' already exists, please upload another image or type in a different image name.'
                 return render_template("imageUpload.html", form=upload_image_form, error=error)
     else:
         print(upload_image_form.errors)

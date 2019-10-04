@@ -1,5 +1,4 @@
 function fileSize(){
-  console.log(JSON.stringify(document.getElementById('image-file')));
     document.cookie = "fileSize=" + document.getElementById('image-file').files[0].size
   }
 

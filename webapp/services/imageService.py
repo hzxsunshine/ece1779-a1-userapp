@@ -5,13 +5,13 @@ from werkzeug.utils import secure_filename
 from webapp.repository import imageRepository
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
-from wtforms.validators import Length, Regexp
+from wtforms.validators import Length, Regexp, optional
 from flask_wtf.file import FileField, FileRequired
 
 
 class UploadImageForm(FlaskForm):
     imageName = StringField('Image Name',
-                            validators=[Length(max=30),
+                            validators=[optional(), Length(max=30),
                                         Regexp(
                                           "^[0-9a-zA-Z\\^\\&\\'\\@\\{\\}\\[\\]\\,\\$\\=\\!\\-\\#\\(\\)\\%\\+\\~\\_ ]+$",
                                           message="Please enter a valid image name. The only characters allowed are "
