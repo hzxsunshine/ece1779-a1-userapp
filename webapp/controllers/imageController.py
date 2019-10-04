@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request
-from flask_login import current_user
+from flask_login import current_user, login_required
 from webapp.services import imageService
 from webapp.services import userService
 
@@ -8,20 +8,15 @@ imageManager = Blueprint("imageManager", __name__)
 
 
 @imageManager.route("/images", methods=["GET"])
+@login_required
 def get_image():
-    if current_user.is_authenticated:
-        return render_template("images.html", title="Images")
-    else:
-        return redirect(url_for("users.login"))
+    return render_template("images.html", title="Images")
 
 
 @imageManager.route("/images/upload", methods=["GET", "POST"])
+@login_required
 def get_upload_image_page():
     error = None
-    if not current_user.is_authenticated:
-        error = 'You need to login first.'
-        login_form = userService.LoginForm()
-        return render_template("login.html", form=login_form, error=error)
     upload_image_form = imageService.UploadImageForm()
     if upload_image_form.validate_on_submit():
         print("image")
