@@ -148,3 +148,14 @@ body {
 .spacer-100 {
   margin: 100px 0px 0px 0px; }
 
+.btn-dark-blue {
+    background-color: #5f788a !important;
+    color: #fff !important;
+    border-color: #5f788a !important;
+}
+.btn-dark-blue:hover{
+    background-color: #fff !important;
+    color: #5f788a !important;
+    border-color: #5f788a !important;
+}
+
