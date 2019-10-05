@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, current_app, send_from_directory
 from flask_login import current_user
 from webapp.services import imageService
 from webapp.services import userService
@@ -10,7 +10,9 @@ imageManager = Blueprint("imageManager", __name__)
 @imageManager.route("/images", methods=["GET"])
 def get_image():
     if current_user.is_authenticated:
-        return render_template("images.html", title="Images")
+        username = current_user.username
+        images = imageService.get_images_by_user()
+        return render_template("images.html", title="Images", username=username, images=images)
     else:
         return redirect(url_for("users.login"))
 
@@ -48,3 +50,7 @@ def get_upload_image_page():
         print(upload_image_form.errors)
 
     return render_template("imageUpload.html", title="Upload Image", form=upload_image_form)
+
+@imageManager.route('/uploads/<path:filename>')
+def download_file(filename):
+    return send_from_directory(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username + "/", filename, as_attachment=True)

@@ -1,7 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
-
-  <div>
-   Hey user, see images.
-  </div>
+    <section>
+        {% if images.count() > 0 %}
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="mb-4">Hey {{ username }}, see images: </h1>
+                    <hr>
+                </div>
+                {% for image in images %}
+                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                    <img class="img-thumbnail" src="{{ url_for('imageManager.download_file', filename=image.image_tn_path.rsplit('/', 1)[-1]) }}"/>
+                    <p class="lead">{{ image.image_path.rsplit("/", 1)[-1].rsplit(".", 1)[0] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <h1 class="mb-4">Start uploading now! </h1>
+        {% endif %}
+    </section>
 {% endblock content %}

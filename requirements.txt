@@ -8,3 +8,4 @@ flask-login==0.4.1
 flask-bcrypt==0.7.1
 werkzeug
 flask_uploads
+wand
