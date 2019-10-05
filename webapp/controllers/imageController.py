@@ -1,29 +1,23 @@
+from flask_login import current_user, login_required
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, send_from_directory
-from flask_login import current_user
 from webapp.services import imageService
 from webapp.services import userService
-
 
 imageManager = Blueprint("imageManager", __name__)
 
 
 @imageManager.route("/images", methods=["GET"])
+@login_required
 def get_image():
-    if current_user.is_authenticated:
-        username = current_user.username
-        images = imageService.get_images_by_user()
-        return render_template("images.html", title="Images", username=username, images=images)
-    else:
-        return redirect(url_for("users.login"))
+    username = current_user.username
+    images = imageService.get_images_by_user()
+    return render_template("images.html", title="Images", username=username, images=images)
 
 
 @imageManager.route("/images/upload", methods=["GET", "POST"])
+@login_required
 def get_upload_image_page():
     error = None
-    if not current_user.is_authenticated:
-        error = 'You need to login first.'
-        login_form = userService.LoginForm()
-        return render_template("login.html", form=login_form, error=error)
     upload_image_form = imageService.UploadImageForm()
     if upload_image_form.validate_on_submit():
         print("image")
@@ -35,7 +29,8 @@ def get_upload_image_page():
                 error = "Image size exceeded maximum limit!"
                 return render_template("imageUpload.html", form=upload_image_form, error=error)
         image_name = upload_image_form.imageName.data + "." + image.data.filename.split('.')[1] \
-            if upload_image_form.imageName and len(upload_image_form.imageName.data.strip()) != 0 else image.data.filename
+            if upload_image_form.imageName and len(
+            upload_image_form.imageName.data.strip()) != 0 else image.data.filename
         if imageService.image_validation(image_name):
             image_path = imageService.save_image(image, image_name)
             if image_path:
@@ -51,6 +46,8 @@ def get_upload_image_page():
 
     return render_template("imageUpload.html", title="Upload Image", form=upload_image_form)
 
+
 @imageManager.route('/uploads/<path:filename>')
 def download_file(filename):
-    return send_from_directory(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username + "/", filename, as_attachment=True)
+    return send_from_directory(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username + "/", filename,
+                               as_attachment=True)
