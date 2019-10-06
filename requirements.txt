@@ -9,3 +9,5 @@ flask-bcrypt==0.7.1
 werkzeug
 flask_uploads
 wand
+imutils
+opencv-python

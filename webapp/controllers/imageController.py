@@ -51,3 +51,8 @@ def get_upload_image_page():
 def download_file(filename):
     return send_from_directory(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username + "/", filename,
                                as_attachment=True)
+
+@imageManager.route('/images/<path:filename>')
+def show_image(filename):
+    image = imageService.get_images_by_filename(filename)
+    return render_template("imageShow.html", image=image)

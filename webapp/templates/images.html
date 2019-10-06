@@ -10,7 +10,9 @@
                 </div>
                 {% for image in images %}
                 <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <img class="img-thumbnail" src="{{ url_for('imageManager.download_file', filename=image.image_tn_path.rsplit('/', 1)[-1]) }}"/>
+                    <a href="{{ url_for('imageManager.show_image', filename=image.image_path.rsplit('/', 1)[-1]) }}">
+                        <img class="img-thumbnail" src="{{ url_for('imageManager.download_file', filename=image.image_tn_path.rsplit('/', 1)[-1]) }}"/>
+                    </a>
                     <p class="lead">{{ image.image_path.rsplit("/", 1)[-1].rsplit(".", 1)[0] }}</p>
                 </div>
                 {% endfor %}

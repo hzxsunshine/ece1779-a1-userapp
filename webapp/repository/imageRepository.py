@@ -10,12 +10,11 @@ def get_images_by_user_id(user_id):
 
 def get_images_by_path(path):
     images = db.session.query(Image).filter(Image.image_path == path).first()
-    print(path)
     return images
 
 
-def save_image(image_path, image_tn_path, user_id):
-    image = Image(image_path, image_tn_path, user_id)
+def save_image(image_path, image_tn_path, image_de_path, user_id):
+    image = Image(image_path, image_tn_path, image_de_path, user_id)
     db.session.add(image)
     db.session.commit()
 
