@@ -12,7 +12,7 @@
           </h4>
           <div class="spacer-50"></div>
           <form action="/images/upload" method="POST" enctype="multipart/form-data">
-                      {{ form.hidden_tag() }}
+            {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.imageName.label(class="form-control-label") }}
                 {% if form.imageName.errors %}
