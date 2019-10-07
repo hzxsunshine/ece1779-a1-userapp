@@ -1,19 +1,22 @@
 {% extends "layout.html" %}
 {% block content %}
+    <div class="spacer-50"></div>
     <section>
         {% if images.count() > 0 %}
-        <div class="container">
-            <div class="row">
+        <div class="container bg-white shadow rounded-lg" style="opacity: 0.92">
+            <div class="row" style="padding-bottom: 3rem">
                 <div class="col-lg-12">
-                    <h1 class="mb-4">Hey {{ username }}, see images: </h1>
+                    <h1 class="mb-4" style="padding-top: 1.5rem; padding-left: 1rem">Hey {{ username }}, see images: </h1>
                     <hr>
                 </div>
                 {% for image in images %}
                 <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a href="{{ url_for('imageManager.show_image', filename=image.image_path.rsplit('/', 1)[-1]) }}">
+                    <a class="align-center" style="height: auto;" href="{{ url_for('imageManager.show_image', filename=image.image_path.rsplit('/', 1)[-1]) }}">
                         <img class="img-thumbnail" src="{{ url_for('imageManager.download_file', filename=image.image_tn_path.rsplit('/', 1)[-1]) }}"/>
                     </a>
-                    <p class="lead">{{ image.image_path.rsplit("/", 1)[-1].rsplit(".", 1)[0] }}</p>
+                    <span class="align-center" style="height: auto;">{{ image.image_path.rsplit("/", 1)[-1].rsplit(".", 1)[0] }}</span>
+                    <div class="spacer-30"></div>
+
                 </div>
                 {% endfor %}
             </div>

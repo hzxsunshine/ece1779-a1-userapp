@@ -13,7 +13,7 @@ users = Blueprint('users', __name__)
 def login():
     error = None
     if current_user.is_authenticated:
-        return redirect(url_for('imageManager.get_image'))
+        return redirect(url_for('imageManager.get_images'))
     form = userService.LoginForm()
     if form.validate_on_submit():
         user = userService.get_user_by_email(email=form.email.data, password=form.password.data)
@@ -21,7 +21,7 @@ def login():
             login_user(user, remember=form.remember_user.data)
             next_page = request.args.get('next')
             print(next_page)
-            return redirect(next_page) if next_page else redirect(url_for('imageManager.get_image'))
+            return redirect(next_page) if next_page else redirect(url_for('imageManager.get_images'))
         else:
             error = "Login Unsuccessful. Please check email and password."
             return render_template('login.html', title='Login', form=form, error=error)
@@ -33,7 +33,7 @@ def register():
     error = None
     form = userService.CreateUserForm()
     if current_user.is_authenticated:
-        return redirect(url_for('imageManager.get_image'))
+        return redirect(url_for('imageManager.get_images'))
     if form.validate_on_submit():
         user_with_email = userService.get_user_by_email(email=form.email.data, password=form.password.data)
         user_with_username = userService.get_user_by_username(username=form.username.data)
