@@ -1,21 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
     <section>
-        <div class="container">
-            <div class="row">
-                <h1 class="mb-4">Before Text Detection: </h1>
+        <div class="spacer-50"></div>
+        <div class="container bg-white shadow rounded-lg">
+            <div class="row align-center">
+                <h3 class="mb-4" style="padding-top: 2rem">Raw Image: </h3>
             </div>
-            <div class="row">
+
+            <div class="row align-center">
                 <img src="{{ url_for('imageManager.download_file', filename=image.image_path.rsplit('/', 1)[-1]) }}"/>
             </div>
-            <br>
-            <br>
-            <div class="row">
-                <h1 class="mb-4">After Text Detection: </h1>
+            <div class="spacer-50"></div>
+            <div class="row align-center">
+                <h3 class="mb-4" style="padding-top: 2rem">After Text Detection: </h3>
             </div>
-            <div class="row">
-                    <img src="{{ url_for('imageManager.download_file', filename=image.image_de_path.rsplit('/', 1)[-1]) }}"/>
+            <div class="row align-center">
+                <img src="{{ url_for('imageManager.download_file', filename=image.image_de_path.rsplit('/', 1)[-1]) }}"/>
             </div>
+
+          <div class="spacer-80"></div>
+          <div class="row align-center" style="padding-bottom: 5rem">
+              <a class="btn btn-lg btn-dark-blue" style="width: 50%" href="/images">
+                  Back to Image List
+              </a>
+          </div>
+          <div class="spacer-80"></div>
+
         </div>
+
     </section>
 {% endblock content %}
