@@ -1,7 +1,6 @@
 from flask_login import current_user, login_required
-from flask import Blueprint, render_template, redirect, url_for, request, current_app, send_from_directory
+from flask import Blueprint, render_template, request, current_app, send_from_directory
 from webapp.services import imageService
-from webapp.services import userService
 
 imageManager = Blueprint("imageManager", __name__)
 

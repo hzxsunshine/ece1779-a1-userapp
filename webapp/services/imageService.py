@@ -1,4 +1,4 @@
-from flask import current_app, url_for
+from flask import current_app
 from flask_login import current_user
 import os
 from werkzeug.utils import secure_filename
