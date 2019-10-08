@@ -54,14 +54,15 @@ def upload():
                     error = "Image size exceeded maximum limit!"
                     return make_response(400, error, None)
                 file = Image.open(io.BytesIO(blob))
-                image_path = imageService.save_image(file, image.filename)
-                if image_path:
+                image_name_stored = imageService.save_image(file, image.filename)
+                if image.filename.lower() == image_name_stored.lower():
                     message = "Image " + image.filename + " is uploaded successfully!"
                     return make_response(200, message, None)
                 else:
-                    error = 'Image ' + image.filename + \
-                            ' already exists, please upload another image or type in a different image name.'
-                    return make_response(409, error, None)
+                    message = "Image with name '" + image.filename + \
+                              "' already exists, image uploaded successfully with a different name: '" \
+                              + image_name_stored + "' !"
+                    return make_response(200, message, None)
             except Exception as e:
                 return make_response(500, "Internal Error!" + str(e), None)
         else:

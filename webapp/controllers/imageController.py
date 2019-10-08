@@ -30,15 +30,15 @@ def get_upload_image_page():
             if upload_image_form.imageName and len(
             upload_image_form.imageName.data.strip()) != 0 else image.data.filename
         if imageService.image_validation(image_name):
-            image_path = imageService.save_image(image.data, image_name)
-            if image_path:
-                print("The image name is : " + image_name)
+            image_name_stored = imageService.save_image(image.data, image_name)
+            if image_name.lower() == image_name_stored.lower:
                 message = "Image " + image_name + " is uploaded successfully!"
                 return render_template("imageUpload.html", form=upload_image_form, message=message)
             else:
-                error = 'Image ' + image_name + \
-                        ' already exists, please upload another image or type in a different image name.'
-                return render_template("imageUpload.html", form=upload_image_form, error=error)
+                message = "Image with name '" + image_name + \
+                        "' already exists, image uploaded successfully with a different name: '" \
+                          + image_name_stored + "' !"
+                return render_template("imageUpload.html", form=upload_image_form, message=message)
     else:
         print(upload_image_form.errors)
 

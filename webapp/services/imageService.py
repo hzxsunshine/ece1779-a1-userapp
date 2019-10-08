@@ -1,6 +1,6 @@
 from flask import current_app
 from flask_login import current_user
-import os
+import os, time
 from werkzeug.utils import secure_filename
 from webapp.repository import imageRepository
 from flask_wtf import FlaskForm
@@ -52,17 +52,21 @@ def save_image(image, image_name):
     filename = secure_filename(image_name)
     image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
     if imageRepository.get_images_by_path(image_path):
-        return None
-    else:
-        image.save(image_path)
-        image_tn_name = create_thumbnail(image_name)
-        image_de_name = create_detection(image_name)
-        filename_tn = secure_filename(image_tn_name)
-        filename_de = secure_filename(image_de_name)
-        image_tn_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_tn)
-        image_de_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_de)
-        imageRepository.save_image(image_path, image_tn_path, image_de_path, current_user.id)
-        return image_path
+        image_name_split = image_name.rsplit('.', 1)
+        image_name_ = image_name_split[0]
+        image_name_extension = image_name_split[1]
+        image_name = image_name_ + '_{}.'.format(int(time.time())) + image_name_extension
+        filename = secure_filename(image_name)
+        image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
+    image.save(image_path)
+    image_tn_name = create_thumbnail(image_name)
+    image_de_name = create_detection(image_name)
+    filename_tn = secure_filename(image_tn_name)
+    filename_de = secure_filename(image_de_name)
+    image_tn_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_tn)
+    image_de_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_de)
+    imageRepository.save_image(image_path, image_tn_path, image_de_path, current_user.id)
+    return image_name
 
 
 def get_images_by_user():
@@ -110,8 +114,6 @@ def create_detection(image_name):
     (numRows, numCols) = scores.shape[2:4]
     rects = []
     confidences = []
-    print(numRows)
-    print(numCols)
     for y in range(0, numRows):
         scoresData = scores[0, 0, y]
         xData0 = geometry[0, 0, y]
