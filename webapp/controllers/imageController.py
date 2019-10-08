@@ -19,7 +19,6 @@ def get_upload_image_page():
     error = None
     upload_image_form = imageService.UploadImageForm()
     if upload_image_form.validate_on_submit():
-        print("image")
         image = upload_image_form.image
         print(image)
         if "fileSize" in request.cookies:
@@ -31,7 +30,7 @@ def get_upload_image_page():
             if upload_image_form.imageName and len(
             upload_image_form.imageName.data.strip()) != 0 else image.data.filename
         if imageService.image_validation(image_name):
-            image_path = imageService.save_image(image, image_name)
+            image_path = imageService.save_image(image.data, image_name)
             if image_path:
                 print("The image name is : " + image_name)
                 message = "Image " + image_name + " is uploaded successfully!"

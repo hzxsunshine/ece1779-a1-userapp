@@ -6,5 +6,4 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def home():
-    # TODO
     return redirect(url_for('users.login'))

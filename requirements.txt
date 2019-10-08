@@ -11,3 +11,4 @@ flask_uploads
 wand
 imutils
 opencv-python
+Pillow

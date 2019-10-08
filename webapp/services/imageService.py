@@ -54,7 +54,7 @@ def save_image(image, image_name):
     if imageRepository.get_images_by_path(image_path):
         return None
     else:
-        image.data.save(image_path)
+        image.save(image_path)
         image_tn_name = create_thumbnail(image_name)
         image_de_name = create_detection(image_name)
         filename_tn = secure_filename(image_tn_name)
