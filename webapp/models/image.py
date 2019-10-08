@@ -3,9 +3,9 @@ from .base import db
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    image_path = db.Column(db.String(200), unique=True)
-    image_tn_path = db.Column(db.String(200), unique=True)
-    image_de_path = db.Column(db.String(200), unique=True)
+    image_path = db.Column(db.String(260), unique=True)
+    image_tn_path = db.Column(db.String(260), unique=True)
+    image_de_path = db.Column(db.String(260), unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('images', lazy=True))
 

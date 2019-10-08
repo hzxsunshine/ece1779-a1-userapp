@@ -31,7 +31,7 @@ def get_upload_image_page():
             upload_image_form.imageName.data.strip()) != 0 else image.data.filename
         if imageService.image_validation(image_name):
             image_name_stored = imageService.save_image(image.data, image_name)
-            if image_name.lower() == image_name_stored.lower:
+            if image_name.lower() == image_name_stored.lower():
                 message = "Image " + image_name + " is uploaded successfully!"
                 return render_template("imageUpload.html", form=upload_image_form, message=message)
             else:
