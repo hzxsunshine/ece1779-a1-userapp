@@ -1,6 +1,9 @@
 from flask_login import current_user, login_required
 from flask import Blueprint, render_template, request, current_app, send_from_directory
 from webapp.services import imageService
+from PIL import Image
+import io
+
 
 imageManager = Blueprint("imageManager", __name__)
 
@@ -24,13 +27,21 @@ def get_upload_image_page():
         if "fileSize" in request.cookies:
             print("Cookie found!!!!!")
             if not imageService.allowed_image_size(request.cookies["fileSize"]):
-                error = "Image size exceeded maximum limit!"
+                error = "Image size exceeded maximum limit 1024*1024!"
                 return render_template("imageUpload.html", form=upload_image_form, error=error)
+        else:
+            error = "Internal Error: can not obtain image size."
+            return render_template("imageUpload.html", form=upload_image_form, error=error)
+
         image_name = upload_image_form.imageName.data + "." + image.data.filename.split('.')[1] \
             if upload_image_form.imageName and len(
             upload_image_form.imageName.data.strip()) != 0 else image.data.filename
         if imageService.image_validation(image_name):
-            image_name_stored = imageService.save_image(image.data, image_name)
+            try:
+                image_name_stored = imageService.save_image(image.data, image_name)
+            except Exception as e:
+                error = "Internal Error: " + str(e)
+                return render_template("imageUpload.html", form=upload_image_form, error=error)
             if image_name.lower() == image_name_stored.lower():
                 message = "Image " + image_name + " is uploaded successfully!"
                 return render_template("imageUpload.html", form=upload_image_form, message=message)
@@ -39,10 +50,11 @@ def get_upload_image_page():
                         "' already exists, image uploaded successfully with a different name: '" \
                           + image_name_stored + "' !"
                 return render_template("imageUpload.html", form=upload_image_form, message=message)
+        else:
+            message = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
+            return render_template("imageUpload.html", form=upload_image_form, error=message)
     else:
-        print(upload_image_form.errors)
-
-    return render_template("imageUpload.html", title="Upload Image", form=upload_image_form)
+        return render_template("imageUpload.html", form=upload_image_form, error=upload_image_form.errors)
 
 
 @imageManager.route('/uploads/<path:filename>')
