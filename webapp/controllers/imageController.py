@@ -51,8 +51,8 @@ def get_upload_image_page():
                           + image_name_stored + "' !"
                 return render_template("imageUpload.html", form=upload_image_form, message=message)
         else:
-            message = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
-            return render_template("imageUpload.html", form=upload_image_form, error=message)
+            error = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
+            return render_template("imageUpload.html", form=upload_image_form, error=error)
     else:
         return render_template("imageUpload.html", form=upload_image_form, error=upload_image_form.errors)
 
