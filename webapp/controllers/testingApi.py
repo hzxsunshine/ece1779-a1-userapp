@@ -51,7 +51,7 @@ def upload():
                 blob = image.read()
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
-                    error = "Image size exceeded maximum limit!"
+                    error = "Image size exceeded maximum limit 1024*1024!"
                     return make_response(400, error, None)
                 file = Image.open(io.BytesIO(blob))
                 image_name_stored = imageService.save_image(file, image.filename)
