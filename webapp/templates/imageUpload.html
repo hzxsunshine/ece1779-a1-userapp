@@ -41,7 +41,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                  <input type="file" class="custom-file-input rounded-pill" accept='image/*' name="image" id="image-file" oninput="fileSize();">
+                  <input type="file" class="custom-file-input rounded-pill" accept='image/*' name="image" id="image-file" oninput="fileSize();" required>
                   <label class="custom-file-label rounded-pill" for="image">Select image...</label>
                 {% endif %}
             </div>
