@@ -7,15 +7,15 @@
                 <h3 class="mb-4" style="padding-top: 2rem">Raw Image: </h3>
             </div>
 
-            <div class="row align-center">
-                <img src="{{ url_for('imageManager.download_file', filename=image.image_path.rsplit('/', 1)[-1]) }}"/>
+            <div class="row align-center" >
+                <img style="max-height: 1024px; max-width: 1024px" src="{{ url_for('imageManager.download_file', filename=image.image_path.rsplit('/', 1)[-1]) }}"/>
             </div>
             <div class="spacer-50"></div>
             <div class="row align-center">
                 <h3 class="mb-4" style="padding-top: 2rem">After Text Detection: </h3>
             </div>
-            <div class="row align-center">
-                <img src="{{ url_for('imageManager.download_file', filename=image.image_de_path.rsplit('/', 1)[-1]) }}"/>
+            <div class="row align-center" >
+                <img style="max-height: 1024px; max-width: 1024px" src="{{ url_for('imageManager.download_file', filename=image.image_de_path.rsplit('/', 1)[-1]) }}"/>
             </div>
 
           <div class="spacer-80"></div>

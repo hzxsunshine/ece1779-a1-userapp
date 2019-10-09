@@ -12,7 +12,7 @@ class Config(object):
     IMAGES_UPLOAD_URL = "/home/ubuntu/Desktop/uploaded_photo"
     TEXT_DETECTION_PB_PATH = "/static/east/frozen_east_text_detection.pb"
     ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG"]
-    MAX_IMAGE_SIZE = 0.5 * 1024 * 1024
+    MAX_IMAGE_SIZE = 0.5 * 2500 * 2500
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=25)
 
