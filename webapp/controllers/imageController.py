@@ -18,7 +18,7 @@ def get_images():
 
 @imageManager.route("/images/upload", methods=["GET", "POST"])
 @login_required
-def get_upload_image_page():
+def upload_image():
     current_app.logger.info("----------Start to upload image!----------")
     upload_image_form = imageService.UploadImageForm()
     try:
