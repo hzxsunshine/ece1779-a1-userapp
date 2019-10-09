@@ -19,42 +19,49 @@ def get_images():
 @imageManager.route("/images/upload", methods=["GET", "POST"])
 @login_required
 def get_upload_image_page():
-    error = None
     upload_image_form = imageService.UploadImageForm()
-    if upload_image_form.validate_on_submit():
-        image = upload_image_form.image
-        print(image)
-        if "fileSize" in request.cookies:
-            print("Cookie found!!!!!")
-            if not imageService.allowed_image_size(request.cookies["fileSize"]):
-                error = "Image size exceeded maximum limit 1024*1024!"
-                return render_template("imageUpload.html", form=upload_image_form, error=error)
-        else:
-            error = "Internal Error: can not obtain image size."
-            return render_template("imageUpload.html", form=upload_image_form, error=error)
+    try:
+        if upload_image_form.validate_on_submit():
+            image = upload_image_form.image
+            print(image)
 
-        image_name = upload_image_form.imageName.data + "." + image.data.filename.split('.')[1] \
-            if upload_image_form.imageName and len(
-            upload_image_form.imageName.data.strip()) != 0 else image.data.filename
-        if imageService.image_validation(image_name):
-            try:
-                image_name_stored = imageService.save_image(image.data, image_name)
-            except Exception as e:
-                error = "Internal Error: " + str(e)
-                return render_template("imageUpload.html", form=upload_image_form, error=error)
-            if image_name.lower() == image_name_stored.lower():
-                message = "Image " + image_name + " is uploaded successfully!"
-                return render_template("imageUpload.html", form=upload_image_form, message=message)
+            image_name = upload_image_form.imageName.data + "." + image.data.filename.split('.')[1] \
+                if upload_image_form.imageName and len(upload_image_form.imageName.data.strip()) != 0 \
+                else image.data.filename
+
+            if request.cookies and "fileSize" in request.cookies:
+                print("Cookie found!!!!!")
+                if not imageService.allowed_image_size(request.cookies["fileSize"]):
+                    error = "Image size exceeded maximum limit 1024*1024!"
+                    return render_template("imageUpload.html", form=upload_image_form, error=error)
+                image_file = image.data
             else:
-                message = "Image with name '" + image_name + \
-                        "' already exists, image uploaded successfully with a different name: '" \
-                          + image_name_stored + "' !"
-                return render_template("imageUpload.html", form=upload_image_form, message=message)
+                print("No Cookie")
+                blob = image.data.read()
+                size = len(blob)
+                if not imageService.allowed_image_size(size):
+                    error = "Image size exceeded maximum limit 1024*1024!"
+                    return render_template("imageUpload.html", form=upload_image_form, error=error)
+                image_file = Image.open(io.BytesIO(blob))
+
+            if imageService.image_validation(image_name):
+                image_name_stored = imageService.save_image(image_file, image_name)
+                if image_name.lower() == image_name_stored.lower():
+                    message = "Image " + image_name + " is uploaded successfully!"
+                    return render_template("imageUpload.html", form=upload_image_form, message=message)
+                else:
+                    message = "Image with name '" + image_name + \
+                            "' already exists, image uploaded successfully with a different name: '" \
+                              + image_name_stored + "' !"
+                    return render_template("imageUpload.html", form=upload_image_form, message=message)
+            else:
+                error = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
+                return render_template("imageUpload.html", form=upload_image_form, error=error)
         else:
-            error = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
-            return render_template("imageUpload.html", form=upload_image_form, error=error)
-    else:
-        return render_template("imageUpload.html", form=upload_image_form, error=upload_image_form.errors)
+            return render_template("imageUpload.html", form=upload_image_form, error=upload_image_form.errors)
+    except Exception as e:
+        error = "Internal Error: " + str(e)
+        return render_template("imageUpload.html", form=upload_image_form, error=error)
 
 
 @imageManager.route('/uploads/<path:filename>')
