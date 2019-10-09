@@ -33,7 +33,7 @@ def get_upload_image_page():
                 print("Cookie found!!!!!")
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):
                     error = "Image size exceeded maximum limit 2500*2500!"
-                    return render_template("imageUpload.html", form=upload_image_form, error=error)
+                    return render_template("imageUpload.html", form=upload_image_form, error=error), 400
                 image_file = image.data
             else:
                 print("No Cookie")
@@ -41,7 +41,7 @@ def get_upload_image_page():
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
                     error = "Image size exceeded maximum limit 2500*2500!"
-                    return render_template("imageUpload.html", form=upload_image_form, error=error)
+                    return render_template("imageUpload.html", form=upload_image_form, error=error), 400
                 image_file = Image.open(io.BytesIO(blob))
 
             if imageService.image_validation(image_name):
@@ -56,12 +56,16 @@ def get_upload_image_page():
                     return render_template("imageUpload.html", form=upload_image_form, message=message)
             else:
                 error = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
-                return render_template("imageUpload.html", form=upload_image_form, error=error)
+                return render_template("imageUpload.html", form=upload_image_form, error=error), 400
         else:
-            return render_template("imageUpload.html", form=upload_image_form, error=upload_image_form.errors)
+
+            if request == 'POST':
+                error = "Internal Error, please try again later."
+                return render_template("imageUpload.html", form=upload_image_form, error=error), 500
+        return render_template("imageUpload.html", form=upload_image_form)
     except Exception as e:
         error = "Internal Error: " + str(e)
-        return render_template("imageUpload.html", form=upload_image_form, error=error)
+        return render_template("imageUpload.html", form=upload_image_form, error=error), 500
 
 
 @imageManager.route('/uploads/<path:filename>')
