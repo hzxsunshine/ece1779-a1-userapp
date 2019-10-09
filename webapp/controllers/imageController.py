@@ -19,28 +19,30 @@ def get_images():
 @imageManager.route("/images/upload", methods=["GET", "POST"])
 @login_required
 def get_upload_image_page():
+    current_app.logger.info("----------Start to upload image!----------")
     upload_image_form = imageService.UploadImageForm()
     try:
         if upload_image_form.validate_on_submit():
             image = upload_image_form.image
-            print(image)
 
             image_name = upload_image_form.imageName.data + "." + image.data.filename.split('.')[1] \
                 if upload_image_form.imageName and len(upload_image_form.imageName.data.strip()) != 0 \
                 else image.data.filename
-
+            current_app.logger.info("----------Image name is {} ----------".format(image_name))
             if request.cookies and "fileSize" in request.cookies:
-                print("Cookie found!!!!!")
+                current_app.logger.debug("----------fileSize in cookie is found!----------")
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):
                     error = "Image size exceeded maximum limit 2500*2500!"
+                    current_app.logger.error("----------400 {} ----------".format(error))
                     return render_template("imageUpload.html", form=upload_image_form, error=error), 400
                 image_file = image.data
             else:
-                print("No Cookie")
+                current_app.logger.info("----------fileSize in cookie is not found!----------")
                 blob = image.data.read()
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
                     error = "Image size exceeded maximum limit 2500*2500!"
+                    current_app.logger.error("----------400 {} ----------".format(error))
                     return render_template("imageUpload.html", form=upload_image_form, error=error), 400
                 image_file = Image.open(io.BytesIO(blob))
 
@@ -48,23 +50,28 @@ def get_upload_image_page():
                 image_name_stored = imageService.save_image(image_file, image_name)
                 if image_name.lower() == image_name_stored.lower():
                     message = "Image " + image_name + " is uploaded successfully!"
+                    current_app.logger.info("----------200 {} ----------".format(message))
                     return render_template("imageUpload.html", form=upload_image_form, message=message)
                 else:
                     message = "Image with name '" + image_name + \
                             "' already exists, image uploaded successfully with a different name: '" \
                               + image_name_stored + "' !"
+                    current_app.logger.info("----------200 {} ----------".format(message))
                     return render_template("imageUpload.html", form=upload_image_form, message=message)
             else:
                 error = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
+                current_app.logger.error("----------400 {} ----------".format(error))
                 return render_template("imageUpload.html", form=upload_image_form, error=error), 400
         else:
 
             if request == 'POST':
                 error = "Internal Error, please try again later."
+                current_app.logger.error("----------Internal Error: {}----------".format(upload_image_form.errors))
                 return render_template("imageUpload.html", form=upload_image_form, error=error), 500
         return render_template("imageUpload.html", form=upload_image_form)
     except Exception as e:
         error = "Internal Error: " + str(e)
+        current_app.logger.error("----------Internal Error: {}----------".format(str(e)))
         return render_template("imageUpload.html", form=upload_image_form, error=error), 500
 
 
