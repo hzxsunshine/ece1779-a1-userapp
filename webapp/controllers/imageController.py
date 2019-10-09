@@ -32,7 +32,7 @@ def get_upload_image_page():
             if request.cookies and "fileSize" in request.cookies:
                 print("Cookie found!!!!!")
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):
-                    error = "Image size exceeded maximum limit 1024*1024!"
+                    error = "Image size exceeded maximum limit 2500*2500!"
                     return render_template("imageUpload.html", form=upload_image_form, error=error)
                 image_file = image.data
             else:
@@ -40,7 +40,7 @@ def get_upload_image_page():
                 blob = image.data.read()
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
-                    error = "Image size exceeded maximum limit 1024*1024!"
+                    error = "Image size exceeded maximum limit 2500*2500!"
                     return render_template("imageUpload.html", form=upload_image_form, error=error)
                 image_file = Image.open(io.BytesIO(blob))
 
