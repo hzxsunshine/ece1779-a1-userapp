@@ -19,7 +19,6 @@ def get_images():
 @imageManager.route("/images/upload", methods=["GET", "POST"])
 @login_required
 def upload_image():
-    current_app.logger.info("----------Start to upload image!----------")
     upload_image_form = imageService.UploadImageForm()
     try:
         if upload_image_form.validate_on_submit():

@@ -49,6 +49,7 @@ def allowed_image_size(filesize):
 
 
 def save_image(image, image_name):
+    current_app.logger.info("----------Start to upload image!----------")
     filename = secure_filename(image_name)
     image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
     if imageRepository.get_images_by_path(image_path):
@@ -59,12 +60,16 @@ def save_image(image, image_name):
         filename = secure_filename(image_name)
         image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
     image.save(image_path)
-    image_tn_name = create_thumbnail(image_name)
-    image_de_name = create_detection(image_name)
-    filename_tn = secure_filename(image_tn_name)
-    filename_de = secure_filename(image_de_name)
-    image_tn_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_tn)
-    image_de_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_de)
+    # Create thumbnail
+    current_app.logger.info("---------- Start to upload thumbnail! ----------")
+    image_tn_name, image_tn_path = create_thumbnail(image_name, image_path)
+    current_app.logger.info("---------- Thumbnail saved to {} ! Name is {} ----------"
+                            .format(image_tn_path, image_tn_name))
+    # Text detection
+    current_app.logger.info("---------- Start to upload text detected image! ----------")
+    image_de_name, image_de_path = create_detection(image_name, image_path)
+    current_app.logger.info("---------- Image after text detection saved to {} ! Name is {} ----------"
+                            .format(image_de_path, image_de_name))
     imageRepository.save_image(image_path, image_tn_path, image_de_path, current_user.id)
     return image_name
 
@@ -78,18 +83,17 @@ def get_images_by_filename(filename):
     return imageRepository.get_images_by_path(image_path)
 
 
-def create_thumbnail(image_name):
-    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, image_name)
+def create_thumbnail(image_name, image_path):
     with Image(filename=image_path).clone() as img:
         img.resize(200, 150)
         image_tn_name = image_name.rsplit(".", 1)[0] + "_tn." + image_name.rsplit(".", 1)[1]
-        img.save(filename=current_app.config["IMAGES_UPLOAD_URL"] + "/" +
-                          current_user.username + "/" + image_tn_name)
-    return image_tn_name
+        filename_tn = secure_filename(image_tn_name)
+        image_tn_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_tn)
+        img.save(filename=image_tn_path)
+    return image_tn_name, image_tn_path
 
 
-def create_detection(image_name):
-    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, image_name)
+def create_detection(image_name, image_path):
     image = cv2.imread(image_path)
     orig = image.copy()
     (H, W) = image.shape[:2]
@@ -144,6 +148,7 @@ def create_detection(image_name):
         endY = int(endY * rH)
         cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
     image_de_name = image_name.rsplit(".", 1)[0] + "_de." + image_name.rsplit(".", 1)[1]
-    filename = current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username + "/" + image_de_name
-    cv2.imwrite(filename, orig)
-    return image_de_name
+    filename_de = secure_filename(image_de_name)
+    image_de_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_de)
+    cv2.imwrite(image_de_path, orig)
+    return image_de_name, image_de_path

@@ -24,7 +24,7 @@ def login():
         else:
             error = "Login Unsuccessful. Please check username and password."
             current_app.logger.error("----------User '{}' Login failed, username/password do not match record----------"
-                                     .format(form.username))
+                                     .format(form.username.data))
             return render_template('login.html', title='Login', form=form, error=error), 401
     else:
         if request == 'POST':
