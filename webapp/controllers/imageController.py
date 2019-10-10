@@ -4,8 +4,14 @@ from webapp.services import imageService
 from PIL import Image
 import io
 
-
 imageManager = Blueprint("imageManager", __name__)
+
+IMAGE_UPLOAD_PAGE = "imageUpload.html"
+INTERNAL_ERROR_MSG = "Internal Error, please try again later."
+IMAGE_SIZE_ERROR = "Image size exceeded maximum limit 2500*2500!"
+IMAGE_TYPE_ERROR = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
+UPLOAD_SUCCESS_MSG = "Image '{}' is uploaded successfully!"
+UPLOAD_SUCCESS_WITH_DIFF_NAME_MSG = "Image with name '{}' already exists, renamed to '{}' and uploaded successfully !"
 
 
 @imageManager.route("/images", methods=["GET"])
@@ -31,47 +37,42 @@ def upload_image():
             if request.cookies and "fileSize" in request.cookies:
                 current_app.logger.debug("----------fileSize in cookie is found!----------")
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):
-                    error = "Image size exceeded maximum limit 2500*2500!"
-                    current_app.logger.error("----------400 {} ----------".format(error))
-                    return render_template("imageUpload.html", form=upload_image_form, error=error), 400
+                    current_app.logger.error("----------400 {} ----------".format(IMAGE_SIZE_ERROR))
+                    return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_SIZE_ERROR), 400
                 image_file = image.data
             else:
                 current_app.logger.info("----------fileSize in cookie is not found!----------")
                 blob = image.data.read()
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
-                    error = "Image size exceeded maximum limit 2500*2500!"
-                    current_app.logger.error("----------400 {} ----------".format(error))
-                    return render_template("imageUpload.html", form=upload_image_form, error=error), 400
+                    current_app.logger.error("----------400 {} ----------".format(IMAGE_SIZE_ERROR))
+                    return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_SIZE_ERROR), 400
                 image_file = Image.open(io.BytesIO(blob))
 
             if imageService.image_validation(image_name):
                 image_name_stored = imageService.save_image(image_file, image_name)
                 if image_name.lower() == image_name_stored.lower():
-                    message = "Image " + image_name + " is uploaded successfully!"
-                    current_app.logger.info("----------200 {} ----------".format(message))
-                    return render_template("imageUpload.html", form=upload_image_form, message=message)
+                    current_app.logger.info("----------200 {} ----------".format(UPLOAD_SUCCESS_MSG.format(image_name)))
+                    return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form,
+                                           message=UPLOAD_SUCCESS_MSG.format(image_name))
                 else:
-                    message = "Image with name '" + image_name + \
-                            "' already exists, image uploaded successfully with a different name: '" \
-                              + image_name_stored + "' !"
-                    current_app.logger.info("----------200 {} ----------".format(message))
-                    return render_template("imageUpload.html", form=upload_image_form, message=message)
+                    current_app.logger.info("----------200 {} ----------".format(
+                      UPLOAD_SUCCESS_WITH_DIFF_NAME_MSG.format(image_name, image_name_stored)))
+                    return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form,
+                                           message=UPLOAD_SUCCESS_WITH_DIFF_NAME_MSG
+                                           .format(image_name, image_name_stored))
             else:
-                error = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
-                current_app.logger.error("----------400 {} ----------".format(error))
-                return render_template("imageUpload.html", form=upload_image_form, error=error), 400
+                current_app.logger.error("----------400 {} ----------".format(IMAGE_TYPE_ERROR))
+                return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_TYPE_ERROR), 400
         else:
 
             if request == 'POST':
-                error = "Internal Error, please try again later."
                 current_app.logger.error("----------Internal Error: {}----------".format(upload_image_form.errors))
-                return render_template("imageUpload.html", form=upload_image_form, error=error), 500
-        return render_template("imageUpload.html", form=upload_image_form)
+                return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=INTERNAL_ERROR_MSG), 500
+        return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form)
     except Exception as e:
-        error = "Internal Error: " + str(e)
         current_app.logger.error("----------Internal Error: {}----------".format(str(e)))
-        return render_template("imageUpload.html", form=upload_image_form, error=error), 500
+        return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=INTERNAL_ERROR_MSG), 500
 
 
 @imageManager.route('/uploads/<path:filename>')

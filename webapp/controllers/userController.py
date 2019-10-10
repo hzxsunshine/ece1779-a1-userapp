@@ -8,6 +8,13 @@ from flask import current_app
 
 users = Blueprint('users', __name__)
 
+LOGIN_PAGE = "login.html"
+REGISTER_PAGE = "register.html"
+INTERNAL_ERROR_MSG = "Internal Error, please try again later."
+AUTHENTICATION_ERROR = "Login Unsuccessful. Please check username and password."
+REG_SUCCESS_MSG = "Registration successful, please login."
+USER_EXISTED_ERROR = "User with username '{}' already exists."
+
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
@@ -22,21 +29,18 @@ def login():
             current_app.logger.info("----------User '{}' login success !----------".format(authenticated_user.username))
             return redirect(next_page) if next_page else redirect(url_for('imageManager.get_images'))
         else:
-            error = "Login Unsuccessful. Please check username and password."
             current_app.logger.error("----------User '{}' Login failed, username/password do not match record----------"
                                      .format(form.username.data))
-            return render_template('login.html', title='Login', form=form, error=error), 401
+            return render_template(LOGIN_PAGE, title='Login', form=form, error=AUTHENTICATION_ERROR), 401
     else:
         if request == 'POST':
-            error = "Internal Error, please try again later."
             current_app.logger.error("----------Internal Error: {}----------".format(form.errors))
-            return render_template('login.html', title='Login', form=form, error=error), 500
-    return render_template('login.html', title='Login', form=form)
+            return render_template(LOGIN_PAGE, title='Login', form=form, error=INTERNAL_ERROR_MSG), 500
+    return render_template(LOGIN_PAGE, title='Login', form=form)
 
 
 @users.route('/register', methods=['GET', 'POST'])
 def register():
-    error = None
     form = userService.CreateUserForm()
     if current_user.is_authenticated:
         return redirect(url_for('imageManager.get_images'))
@@ -44,27 +48,25 @@ def register():
         user_with_username = userService.get_user_by_username(username=form.username.data)
 
         if user_with_username:
-            error = "User with username '" + form.username.data + "' already existed."
-            current_app.logger.error("----------409 Registration conflict: {}----------".format(error))
-            return render_template('register.html', title='Register', form=form, error=error), 409
+            current_app.logger.error("----------409 Registration conflict: {} already exists----------"
+                                     .format(form.username.data))
+            return render_template(REGISTER_PAGE, title='Register', form=form,
+                                   error=USER_EXISTED_ERROR.format(form.username.data)), 409
         else:
             try:
                 user = userService.create_user(username=form.username.data, password=form.password.data)
-                message = "Registration successful, please login."
                 os.makedirs(os.path.join(current_app.config["IMAGES_UPLOAD_URL"], form.username.data))
                 login_form = userService.LoginForm()
                 current_app.logger.info("----------User '{}' register successful----------".format(user.username))
-                return render_template('login.html', title='Login', form=login_form, message=message)
+                return render_template(LOGIN_PAGE, title='Login', form=login_form, message=REG_SUCCESS_MSG)
             except IntegrityError as e:
-                error = "Create user failed, please try again later."
                 current_app.logger.error("----------Database action error: {}----------".format(str(e)))
-                return render_template('register.html', title='Register', form=form, error=error), 500
+                return render_template(REGISTER_PAGE, title='Register', form=form, error=INTERNAL_ERROR_MSG), 500
     else:
         if request.method == 'POST':
-            error = "Internal Error, please try again later."
             current_app.logger.error("----------Internal Error: {}----------".format(form.errors))
-            return render_template('register.html', title='Register', form=form, error=error), 500
-    return render_template('register.html', title='Register', form=form)
+            return render_template(REGISTER_PAGE, title='Register', form=form, error=INTERNAL_ERROR_MSG), 500
+    return render_template(REGISTER_PAGE, title='Register', form=form)
 
 
 @users.route('/logout')

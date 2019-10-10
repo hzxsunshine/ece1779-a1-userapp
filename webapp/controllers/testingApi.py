@@ -1,11 +1,10 @@
 from flask import jsonify
 from webapp.services import userService
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user
 from sqlalchemy.exc import IntegrityError
 import os
-from flask import Blueprint, render_template, request, current_app, send_from_directory
+from flask import Blueprint,  request, current_app
 from webapp.services import imageService
-from werkzeug.exceptions import RequestEntityTooLarge
 import io
 from PIL import Image
 
