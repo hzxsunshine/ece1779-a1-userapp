@@ -1,6 +1,5 @@
 from flask import jsonify
 from webapp.services import userService
-from flask_login import login_user
 from sqlalchemy.exc import IntegrityError
 import os
 from flask import Blueprint,  request, current_app
@@ -42,10 +41,6 @@ def upload():
         image = files['file']
         authenticated_user = userService.is_authenticated(username, password)
         if authenticated_user:
-            try:
-                login_user(authenticated_user)
-            except:
-                return make_response(500, "Internal Error! Login failed", form['username'])
             if imageService.image_validation(image.filename):
                 try:
                     blob = image.read()

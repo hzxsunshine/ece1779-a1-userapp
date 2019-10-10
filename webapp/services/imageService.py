@@ -51,9 +51,7 @@ def allowed_image_size(filesize):
 def save_image(image, image_name):
     image_name_org = image_name
     current_app.logger.info("----------Start to upload image!----------")
-    # filename = secure_filename(image_name)
-    # image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
-    # if imageRepository.get_images_by_path(image_path):
+
     image_name_split = image_name.rsplit('.', 1)
     image_name_ = image_name_split[0]
     image_name_extension = image_name_split[1]
