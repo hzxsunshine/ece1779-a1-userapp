@@ -6,6 +6,7 @@ from flask import Blueprint,  request, current_app
 from webapp.services import imageService
 import io
 from PIL import Image
+from flask_login import login_user
 
 
 test = Blueprint('test', __name__)
@@ -41,6 +42,10 @@ def upload():
         image = files['file']
         authenticated_user = userService.is_authenticated(username, password)
         if authenticated_user:
+            try:
+                login_user(authenticated_user)
+            except:
+                return make_response(500, "Internal Error! Login failed", form['username'])
             if imageService.image_validation(image.filename):
                 try:
                     blob = image.read()
