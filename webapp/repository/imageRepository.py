@@ -13,8 +13,8 @@ def get_images_by_path(path):
     return images
 
 
-def save_image(image_path, image_tn_path, image_de_path, user_id):
-    image = Image(image_path, image_tn_path, image_de_path, user_id)
+def save_image(image_name, image_path, image_tn_path, image_de_path, user_id):
+    image = Image(image_name, image_path, image_tn_path, image_de_path, user_id)
     db.session.add(image)
     db.session.commit()
 

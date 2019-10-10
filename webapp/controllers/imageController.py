@@ -50,17 +50,10 @@ def upload_image():
                 image_file = Image.open(io.BytesIO(blob))
 
             if imageService.image_validation(image_name):
-                image_name_stored = imageService.save_image(image_file, image_name)
-                if image_name.lower() == image_name_stored.lower():
-                    current_app.logger.info("----------200 {} ----------".format(UPLOAD_SUCCESS_MSG.format(image_name)))
-                    return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form,
-                                           message=UPLOAD_SUCCESS_MSG.format(image_name))
-                else:
-                    current_app.logger.info("----------200 {} ----------".format(
-                      UPLOAD_SUCCESS_WITH_DIFF_NAME_MSG.format(image_name, image_name_stored)))
-                    return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form,
-                                           message=UPLOAD_SUCCESS_WITH_DIFF_NAME_MSG
-                                           .format(image_name, image_name_stored))
+                image_name_org = imageService.save_image(image_file, image_name)
+                current_app.logger.info("----------200 {} ----------".format(UPLOAD_SUCCESS_MSG.format(image_name_org)))
+                return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form,
+                                       message=UPLOAD_SUCCESS_MSG.format(image_name))
             else:
                 current_app.logger.error("----------400 {} ----------".format(IMAGE_TYPE_ERROR))
                 return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_TYPE_ERROR), 400

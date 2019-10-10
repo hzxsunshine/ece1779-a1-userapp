@@ -1,6 +1,6 @@
 from flask import current_app
 from flask_login import current_user
-import os, time
+import os, uuid
 from werkzeug.utils import secure_filename
 from webapp.repository import imageRepository
 from flask_wtf import FlaskForm
@@ -49,29 +49,31 @@ def allowed_image_size(filesize):
 
 
 def save_image(image, image_name):
+    image_name_org = image_name
     current_app.logger.info("----------Start to upload image!----------")
-    filename = secure_filename(image_name)
-    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
-    if imageRepository.get_images_by_path(image_path):
-        image_name_split = image_name.rsplit('.', 1)
-        image_name_ = image_name_split[0]
-        image_name_extension = image_name_split[1]
-        image_name = image_name_ + '_{}.'.format(int(time.time())) + image_name_extension
-        filename = secure_filename(image_name)
-        image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
+    # filename = secure_filename(image_name)
+    # image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
+    # if imageRepository.get_images_by_path(image_path):
+    image_name_split = image_name.rsplit('.', 1)
+    image_name_ = image_name_split[0]
+    image_name_extension = image_name_split[1]
+    image_name = image_name_ + '_{}.'.format(uuid.uuid1().int) + image_name_extension
+
+    filename_to_store = secure_filename(image_name)
+    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_to_store)
     image.save(image_path)
     # Create thumbnail
     current_app.logger.info("---------- Start to upload thumbnail! ----------")
-    image_tn_name, image_tn_path = create_thumbnail(image_name, image_path)
+    image_tn_name_to_store, image_tn_path = create_thumbnail(image_name, image_path)
     current_app.logger.info("---------- Thumbnail saved to {} ! Name is {} ----------"
-                            .format(image_tn_path, image_tn_name))
+                            .format(image_tn_path, image_tn_name_to_store))
     # Text detection
     current_app.logger.info("---------- Start to upload text detected image! ----------")
-    image_de_name, image_de_path = create_detection(image_name, image_path)
+    image_de_name_to_store, image_de_path = create_detection(image_name, image_path)
     current_app.logger.info("---------- Image after text detection saved to {} ! Name is {} ----------"
-                            .format(image_de_path, image_de_name))
-    imageRepository.save_image(image_path, image_tn_path, image_de_path, current_user.id)
-    return image_name
+                            .format(image_de_path, image_de_name_to_store))
+    imageRepository.save_image(image_name_org, image_path, image_tn_path, image_de_path, current_user.id)
+    return image_name_org
 
 
 def get_images_by_user():
