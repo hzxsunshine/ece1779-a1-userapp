@@ -9,3 +9,15 @@ $('#image-file').on('change',function(){
     //replace the "Choose a file" label
     $(this).next('.custom-file-label').html(fileName);
 })
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+$(document).ready(function() {
+    $("#btnFetch").click(function() {
+      // disable button
+      $(this).prop("hidden", true);
+      $("#btnFetch1").prop("hidden", false)
+    });
+});

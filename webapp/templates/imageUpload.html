@@ -47,7 +47,10 @@
             </div>
           </div>
             <div class="form-group">
-                {{ form.submit(class="btn btn-lg btn-dark-blue", style="width:100%") }}
+                  <button type="submit" name="submit" id="btnFetch" class="btn btn-lg btn-dark-blue" style="width:100%" >Upload</button>
+                  <button  type="submit" name="submit" id="btnFetch1" class="btn btn-lg btn-dark-blue" style="width:100%" disabled hidden>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...
+                  </button>
             </div>
           </form>
 
