@@ -14,9 +14,8 @@ test = Blueprint('test', __name__)
 
 @test.route('/api/register', methods=['POST'])
 def register():
-    error = None
     form = request.form
-    if form:
+    if form and 'username' in form and 'password' in form:
         user_with_username = userService.get_user_by_username(username=form['username'])
         if user_with_username:
             return make_response(409, "User already exists.", form['username'])
@@ -26,9 +25,9 @@ def register():
                 os.makedirs(os.path.join(current_app.config["IMAGES_UPLOAD_URL"], form['username']))
                 return make_response(200, "User created successfully.", form['username'])
             except IntegrityError:
-                return make_response(500, "Database Internal Error.", form['username'])
+                return make_response(500, "Database Internal Error.", None)
     else:
-        return make_response(400, "Bad Request!, request body not found", None)
+        return make_response(400, "Bad Request!, request body missing", None)
 
 
 @test.route('/api/upload', methods=['POST'])
@@ -36,16 +35,13 @@ def upload():
     form = request.form
     files = request.files
 
-    if form and files:
+    if form and 'username' in form and 'password' in form and files:
         username = form['username']
         password = form['password']
         image = files['file']
         authenticated_user = userService.is_authenticated(username, password)
         if authenticated_user:
-            try:
-                login_user(authenticated_user)
-            except:
-                return make_response(500, "Internal Error! Login failed", form['username'])
+            login_user(authenticated_user)
             if imageService.image_validation(image.filename):
                 try:
                     blob = image.read()

@@ -11,7 +11,6 @@ INTERNAL_ERROR_MSG = "Internal Error, please try again later."
 IMAGE_SIZE_ERROR = "Image size exceeded maximum limit 2500*2500!"
 IMAGE_TYPE_ERROR = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
 UPLOAD_SUCCESS_MSG = "Image '{}' is uploaded successfully!"
-UPLOAD_SUCCESS_WITH_DIFF_NAME_MSG = "Image with name '{}' already exists, renamed to '{}' and uploaded successfully !"
 
 
 @imageManager.route("/images", methods=["GET"])
