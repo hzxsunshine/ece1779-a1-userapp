@@ -8,7 +8,8 @@ imageManager = Blueprint("imageManager", __name__)
 
 IMAGE_UPLOAD_PAGE = "imageUpload.html"
 INTERNAL_ERROR_MSG = "Internal Error, please try again later."
-IMAGE_SIZE_ERROR = "Image size exceeded maximum limit 2500*2500!"
+IMAGE_NAME_LENGTH_ERROR = "Image name should be less than 30 characters, you can optional input an image alias instead."
+IMAGE_SIZE_ERROR = "Image size exceeds maximum limit 2500*2500!"
 IMAGE_TYPE_ERROR = "Invalid Image! Only JPEG, JPG, PNG files are accepted!"
 UPLOAD_SUCCESS_MSG = "Image '{}' is uploaded successfully!"
 
@@ -33,6 +34,10 @@ def upload_image():
                 if upload_image_form.imageName and len(upload_image_form.imageName.data.strip()) != 0 \
                 else image.data.filename
             current_app.logger.info("----------Image name is {} ----------".format(image_name))
+            if len(image_name) > 30:
+                current_app.logger.error("----------400 {} ----------".format(IMAGE_NAME_LENGTH_ERROR))
+                return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_NAME_LENGTH_ERROR), 400
+
             if request.cookies and "fileSize" in request.cookies:
                 current_app.logger.debug("----------fileSize in cookie is found!----------")
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):

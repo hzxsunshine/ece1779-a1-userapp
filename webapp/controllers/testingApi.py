@@ -50,6 +50,12 @@ def upload():
                         error = "Image size exceeded maximum limit 2500*2500!"
                         return make_response(400, error, None)
                     file = Image.open(io.BytesIO(blob))
+
+                    image_name = image.filename
+                    if len(image_name) > 30:
+                        error = "Image name can not longer than 30 characters."
+                        return make_response(400, error, None)
+
                     image_name_stored = imageService.save_image(file, image.filename)
                     if image.filename.lower() == image_name_stored.lower():
                         message = "Image " + image.filename + " is uploaded successfully!"
