@@ -21,7 +21,7 @@ class UploadImageForm(FlaskForm):
                                             message="Please enter a valid image name. The only characters allowed are "
                                                     "alphabetic, numeric, "
                                                     "and ^ & ' @ { } [ ] , $ = ! - # ( ) % + ~ _ ")])
-    image = FileField('image', validators=[FileRequired()])
+    image = FileField('image', validators=[FileRequired(message="Image is required!")])
     submit = SubmitField('Upload')
 
 

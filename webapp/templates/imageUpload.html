@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group">
-              <div class="custom-file overflow-hidden rounded-pill mb-5">
+              <div class="custom-file rounded-pill mb-5">
                 {% if form.image.errors %}
                     <input type="file" class="custom-file-input rounded-pill is-invalid" accept='image/*' name="image" id="image-file" oninput="fileSize();">
                     <label class="custom-file-label rounded-pill" for="image">Select image...</label>
@@ -41,7 +41,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                  <input type="file" class="custom-file-input rounded-pill" accept='image/*' name="image" id="image-file" oninput="fileSize();" required>
+                  <input type="file" class="custom-file-input rounded-pill" accept='image/*' name="image" id="image-file" oninput="fileSize();">
                   <label class="custom-file-label rounded-pill" for="image">Select image...</label>
                 {% endif %}
             </div>
