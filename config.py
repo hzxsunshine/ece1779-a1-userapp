@@ -10,7 +10,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = "mysql://ece1779a1:password123@localhost/ece1779a1"
 
-    IMAGES_UPLOAD_URL = "/home/ubuntu/Desktop/uploaded_photo"
+    IMAGES_UPLOAD_URL = "/var/lib/jenkins/workspace/ECE1779A1/uploaded_photo"
     # IMAGES_UPLOAD_URL = "/Users/ranyang/Desktop/ece1779a1"
 
     TEXT_DETECTION_PB_PATH = "/static/east/frozen_east_text_detection.pb"
