@@ -16,6 +16,10 @@ test = Blueprint('test', __name__)
 def register():
     form = request.form
     if form and 'username' in form and 'password' in form:
+        if len(form['username']) < 2 or len(form['username']) > 30:
+            return make_response(400, "Bad Request!, the length of username must between 2 to 30 characters", None)
+        if len(form['password']) < 6 or len(form['password']) > 20:
+            return make_response(400, "Bad Request!, the length of password must between 6 to 20", None)
         user_with_username = userService.get_user_by_username(username=form['username'])
         if user_with_username:
             return make_response(409, "User already exists.", form['username'])
