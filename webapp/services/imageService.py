@@ -11,6 +11,7 @@ from wand.image import Image
 from imutils.object_detection import non_max_suppression
 import numpy as np
 import cv2
+import boto3
 
 
 class UploadImageForm(FlaskForm):
@@ -58,8 +59,9 @@ def save_image(image, image_name):
     image_name = image_name_ + '_{}.'.format(uuid.uuid1().int) + image_name_extension
 
     filename_to_store = secure_filename(image_name)
-    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_to_store)
-    image.save(image_path)
+    image_path = current_user.username + '/' + filename_to_store
+    upload_to_s3(image_path, image)
+    # image.save(image_path)
     # Create thumbnail
     current_app.logger.info("---------- Start to upload thumbnail! ----------")
     image_tn_name_to_store, image_tn_path = create_thumbnail(image_name, image_path)
@@ -84,17 +86,20 @@ def get_images_by_filename(filename):
 
 
 def create_thumbnail(image_name, image_path):
-    with Image(filename=image_path).clone() as img:
+    image = read_from_s3(image_path)
+    with image.clone() as img:
         img.resize(200, 150)
         image_tn_name = image_name.rsplit(".", 1)[0] + "_tn." + image_name.rsplit(".", 1)[1]
         filename_tn = secure_filename(image_tn_name)
-        image_tn_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_tn)
-        img.save(filename=image_tn_path)
+        image_tn_path = current_user.username + "/" + filename_tn
+        # img.save(filename=image_tn_path)
+        upload_to_s3(image_tn_path, img)
     return image_tn_name, image_tn_path
 
 
 def create_detection(image_name, image_path):
-    image = cv2.imread(image_path)
+    # image = cv2.imread(image_path)
+    image = read_from_s3(image_path)
     orig = image.copy()
     (H, W) = image.shape[:2]
     if H % 32 != 0:
@@ -149,6 +154,19 @@ def create_detection(image_name, image_path):
         cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
     image_de_name = image_name.rsplit(".", 1)[0] + "_de." + image_name.rsplit(".", 1)[1]
     filename_de = secure_filename(image_de_name)
-    image_de_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename_de)
-    cv2.imwrite(image_de_path, orig)
+    image_de_path = current_user.username + "/" + filename_de
+    # cv2.imwrite(image_de_path, orig)
+    upload_to_s3(image_de_path, orig)
     return image_de_name, image_de_path
+
+
+def upload_to_s3(image_path, image):
+    s3 = boto3.resource('s3')
+    s3.Bucket('ece1779a2-rita').put_object(Key=image_path, Body=image)
+
+
+def read_from_s3(image_path):
+    s3 = boto3.resource('s3')
+    return s3.Bucket('ece1779a2-rita').Object(image_path)
+
+

@@ -11,3 +11,4 @@ wand
 imutils
 opencv-python
 Pillow
+boto3
