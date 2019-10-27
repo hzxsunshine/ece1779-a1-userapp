@@ -3,7 +3,7 @@ from datetime import timedelta
 
 class Config(object):
     DEBUG = True
-    LOGGING_FILE_PATH = "/ece1779a1.log"
+    LOGGING_FILE_PATH = "/ece1779.log"
     TESTING = False
     SECRET_KEY = "fe8e5c349e8eb13bf65bdc261229d43d"
 
