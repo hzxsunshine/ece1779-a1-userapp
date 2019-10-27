@@ -19,3 +19,6 @@ class Config(object):
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=25)
 
+    AWS_ACCESS_KEY_ID = "AKIAIBS4GQKQGU5STXTQ"
+    AWS_SECRET_ACCESS_KEY = "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"
+

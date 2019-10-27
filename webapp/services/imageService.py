@@ -161,12 +161,14 @@ def create_detection(image_name, image_path):
 
 
 def upload_to_s3(image_path, image):
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource('s3', aws_access_key_id=current_app.config["AWS_ACCESS_KEY_ID"],
+                        aws_secret_access_key=current_app.config["AWS_SECRET_ACCESS_KEY"])
     s3.Bucket('ece1779a2-rita').put_object(Key=image_path, Body=image)
 
 
 def read_from_s3(image_path):
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource('s3', aws_access_key_id=current_app.config["AWS_ACCESS_KEY_ID"],
+                        aws_secret_access_key=current_app.config["AWS_SECRET_ACCESS_KEY"])
     return s3.Bucket('ece1779a2-rita').Object(image_path)
 
 
