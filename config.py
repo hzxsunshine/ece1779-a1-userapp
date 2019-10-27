@@ -16,9 +16,5 @@ class Config(object):
     MAX_IMAGE_SIZE = 0.5 * 2500 * 2500
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=25)
-
-    AWS_ACCESS_KEY_ID = "AKIAIBS4GQKQGU5STXTQ"
-    AWS_SECRET_ACCESS_KEY = "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"
-
     S3_BUCKET_LOCATION = "https://ece1779a2-rita.s3.amazonaws.com/"
 
