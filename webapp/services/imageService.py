@@ -153,7 +153,7 @@ def create_detection(image_name, blob):
     image_de_name = image_name.rsplit(".", 1)[0] + "_de." + image_name.rsplit(".", 1)[1]
     filename_de = secure_filename(image_de_name)
     image_de_path = current_user.username + "/" + filename_de
-    upload_to_s3(image_de_path, orig.tobytes())
+    upload_to_s3(image_de_path, cv2.imencode('.'+filename_de.rpartition('.')[-1], orig)[1].tobytes())
     return image_de_name, image_de_path
 
 
