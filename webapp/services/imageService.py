@@ -49,7 +49,7 @@ def allowed_image_size(filesize):
         return False
 
 
-def save_image(image, image_name, blob):
+def save_image(image_name, blob):
     image_name_org = image_name
     current_app.logger.info("----------Start to upload image!----------")
 

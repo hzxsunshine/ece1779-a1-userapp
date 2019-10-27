@@ -60,7 +60,7 @@ def upload():
                         error = "Image name can not longer than 30 characters."
                         return make_response(400, error, None)
 
-                    image_name_stored = imageService.save_image(file, image.filename)
+                    image_name_stored = imageService.save_image(image.filename, blob)
                     if image.filename.lower() == image_name_stored.lower():
                         message = "Image " + image.filename + " is uploaded successfully!"
                         return make_response(200, message, None)
