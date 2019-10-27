@@ -80,7 +80,7 @@ def get_images_by_user():
 
 
 def get_images_by_filename(filename):
-    image_path = os.path.join(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username, filename)
+    image_path = current_user.username + "/" + filename
     return imageRepository.get_images_by_path(image_path)
 
 
@@ -166,6 +166,6 @@ def upload_to_s3(image_path, image):
 def read_from_s3(image_path):
     s3 = boto3.resource('s3', aws_access_key_id=current_app.config["AWS_ACCESS_KEY_ID"],
                         aws_secret_access_key=current_app.config["AWS_SECRET_ACCESS_KEY"])
-    return s3.Bucket('ece1779a2-rita').Object(image_path)
+    return s3.Bucket('ece1779a2-rita').Object(image_path).toByteArray()
 
 

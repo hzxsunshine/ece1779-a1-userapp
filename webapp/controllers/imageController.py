@@ -19,7 +19,8 @@ UPLOAD_SUCCESS_MSG = "Image '{}' is uploaded successfully!"
 def get_images():
     username = current_user.username
     images = imageService.get_images_by_user()
-    return render_template("images.html", title="Images", username=username, images=images)
+    return render_template("images.html", title="Images", username=username, images=images,
+                           s3Location=current_app.config["S3_BUCKET_LOCATION"])
 
 
 @imageManager.route("/images/upload", methods=["GET", "POST"])
@@ -72,15 +73,14 @@ def upload_image():
         return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=INTERNAL_ERROR_MSG), 500
 
 
-@imageManager.route('/uploads/<path:filename>')
-@login_required
-def download_file(filename):
-    return send_from_directory(current_app.config["IMAGES_UPLOAD_URL"] + "/" + current_user.username + "/", filename,
-                               as_attachment=True)
+# @imageManager.route('/uploads/<path:filename>')
+# @login_required
+# def download_file(filename):
+#     return current_app.config["S3_BUCKET_LOCATION"] + current_user.username + "/" + filename
 
 
 @imageManager.route('/images/<path:filename>')
 @login_required
 def show_image(filename):
     image = imageService.get_images_by_filename(filename)
-    return render_template("imageShow.html", image=image)
+    return render_template("imageShow.html", image=image, s3Location=current_app.config["S3_BUCKET_LOCATION"])

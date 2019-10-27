@@ -12,7 +12,7 @@
                 {% for image in images %}
                 <div class="col-lg-3 col-md-4 col-xs-6 thumb">
                     <a class="align-center" style="height: auto;" href="{{ url_for('imageManager.show_image', filename=image.image_path.rsplit('/', 1)[-1]) }}">
-                        <img class="img-thumbnail" src="{{ url_for('imageManager.download_file', filename=image.image_tn_path.rsplit('/', 1)[-1]) }}"/>
+                        <img class="img-thumbnail" src="{{s3Location}}{{image.image_tn_path}}"/>
                     </a>
                     <span class="align-center" style="height: auto;">{{ image.image_name }}</span>
                     <div class="spacer-30"></div>

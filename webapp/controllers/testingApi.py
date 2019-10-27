@@ -26,7 +26,6 @@ def register():
         else:
             try:
                 userService.create_user(username=form['username'], password=form['password'])
-                os.makedirs(os.path.join(current_app.config["IMAGES_UPLOAD_URL"], form['username']))
                 return make_response(200, "User created successfully.", form['username'])
             except IntegrityError:
                 return make_response(500, "Database Internal Error.", None)
