@@ -38,6 +38,7 @@ def upload_image():
                 current_app.logger.error("----------400 {} ----------".format(IMAGE_NAME_LENGTH_ERROR))
                 return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_NAME_LENGTH_ERROR), 400
 
+            blob = image.data.read()
             if request.cookies and "fileSize" in request.cookies:
                 current_app.logger.debug("----------fileSize in cookie is found!----------")
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):
@@ -46,7 +47,6 @@ def upload_image():
                 image_file = image.data
             else:
                 current_app.logger.info("----------fileSize in cookie is not found!----------")
-                blob = image.data.read()
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
                     current_app.logger.error("----------400 {} ----------".format(IMAGE_SIZE_ERROR))
@@ -54,7 +54,7 @@ def upload_image():
                 image_file = Image.open(io.BytesIO(blob))
 
             if imageService.image_validation(image_name):
-                image_name_org = imageService.save_image(image_file, image_name)
+                image_name_org = imageService.save_image(image_file, image_name, blob)
                 current_app.logger.info("----------200 {} ----------".format(UPLOAD_SUCCESS_MSG.format(image_name_org)))
                 return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form,
                                        message=UPLOAD_SUCCESS_MSG.format(image_name))

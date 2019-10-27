@@ -49,7 +49,7 @@ def allowed_image_size(filesize):
         return False
 
 
-def save_image(image, image_name):
+def save_image(image, image_name, blob):
     image_name_org = image_name
     current_app.logger.info("----------Start to upload image!----------")
 
@@ -60,16 +60,15 @@ def save_image(image, image_name):
 
     filename_to_store = secure_filename(image_name)
     image_path = current_user.username + '/' + filename_to_store
-    upload_to_s3(image_path, image)
-    # image.save(image_path)
+    upload_to_s3(image_path, blob)
     # Create thumbnail
     current_app.logger.info("---------- Start to upload thumbnail! ----------")
-    image_tn_name_to_store, image_tn_path = create_thumbnail(image_name, image_path)
+    image_tn_name_to_store, image_tn_path = create_thumbnail(image_name, blob)
     current_app.logger.info("---------- Thumbnail saved to {} ! Name is {} ----------"
                             .format(image_tn_path, image_tn_name_to_store))
     # Text detection
     current_app.logger.info("---------- Start to upload text detected image! ----------")
-    image_de_name_to_store, image_de_path = create_detection(image_name, image_path)
+    image_de_name_to_store, image_de_path = create_detection(image_name, blob)
     current_app.logger.info("---------- Image after text detection saved to {} ! Name is {} ----------"
                             .format(image_de_path, image_de_name_to_store))
     imageRepository.save_image(image_name_org, image_path, image_tn_path, image_de_path, current_user.id)
@@ -85,21 +84,20 @@ def get_images_by_filename(filename):
     return imageRepository.get_images_by_path(image_path)
 
 
-def create_thumbnail(image_name, image_path):
-    image = read_from_s3(image_path)
-    with image.clone() as img:
+def create_thumbnail(image_name, blob):
+    with Image(blob=blob).clone() as img:
         img.resize(200, 150)
         image_tn_name = image_name.rsplit(".", 1)[0] + "_tn." + image_name.rsplit(".", 1)[1]
         filename_tn = secure_filename(image_tn_name)
         image_tn_path = current_user.username + "/" + filename_tn
-        # img.save(filename=image_tn_path)
-        upload_to_s3(image_tn_path, img)
+        upload_to_s3(image_tn_path, img.make_blob())
     return image_tn_name, image_tn_path
 
 
-def create_detection(image_name, image_path):
-    # image = cv2.imread(image_path)
-    image = read_from_s3(image_path)
+def create_detection(image_name, blob):
+    with Image(blob=blob) as img:
+        img_buffer = np.asarray(bytearray(img.make_blob()), dtype=np.uint8)
+    image = cv2.imdecode(img_buffer, cv2.IMREAD_UNCHANGED)
     orig = image.copy()
     (H, W) = image.shape[:2]
     if H % 32 != 0:
@@ -155,8 +153,7 @@ def create_detection(image_name, image_path):
     image_de_name = image_name.rsplit(".", 1)[0] + "_de." + image_name.rsplit(".", 1)[1]
     filename_de = secure_filename(image_de_name)
     image_de_path = current_user.username + "/" + filename_de
-    # cv2.imwrite(image_de_path, orig)
-    upload_to_s3(image_de_path, orig)
+    upload_to_s3(image_de_path, orig.tobytes())
     return image_de_name, image_de_path
 
 
