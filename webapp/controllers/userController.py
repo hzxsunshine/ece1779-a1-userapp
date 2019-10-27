@@ -55,7 +55,6 @@ def register():
         else:
             try:
                 user = userService.create_user(username=form.username.data, password=form.password.data)
-                os.makedirs(os.path.join(current_app.config["IMAGES_UPLOAD_URL"], form.username.data))
                 login_form = userService.LoginForm()
                 current_app.logger.info("----------User '{}' register successful----------".format(user.username))
                 return render_template(LOGIN_PAGE, title='Login', form=login_form, message=REG_SUCCESS_MSG)
