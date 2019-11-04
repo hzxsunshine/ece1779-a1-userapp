@@ -159,11 +159,11 @@ def create_detection(image_name, blob):
 
 def upload_to_s3(image_path, image):
     s3 = boto3.resource('s3')
-    s3.Bucket('ece1779a2-rita').put_object(Key=image_path, Body=image)
+    s3.Bucket(current_app.config['S3_BUCKET_Name']).put_object(Key=image_path, Body=image)
 
 
 def read_from_s3(image_path):
     s3 = boto3.resource('s3')
-    return s3.Bucket('ece1779a2-rita').Object(image_path).toByteArray()
+    return s3.Bucket(current_app.config['S3_BUCKET_Name']).Object(image_path).toByteArray()
 
 
