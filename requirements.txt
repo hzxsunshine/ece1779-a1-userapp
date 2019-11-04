@@ -5,7 +5,7 @@ sqlalchemy
 flask-wtf==0.14.2
 wtforms
 flask-login==0.4.1
-werkzeug
+werkzeug>=0.15.0
 flask_uploads
 wand
 imutils
