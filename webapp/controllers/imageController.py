@@ -45,14 +45,12 @@ def upload_image():
                 if not imageService.allowed_image_size(request.cookies["fileSize"]):
                     current_app.logger.error("----------400 {} ----------".format(IMAGE_SIZE_ERROR))
                     return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_SIZE_ERROR), 400
-                image_file = image.data
             else:
                 current_app.logger.info("----------fileSize in cookie is not found!----------")
                 size = len(blob)
                 if not imageService.allowed_image_size(size):
                     current_app.logger.error("----------400 {} ----------".format(IMAGE_SIZE_ERROR))
                     return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=IMAGE_SIZE_ERROR), 400
-                image_file = Image.open(io.BytesIO(blob))
 
             if imageService.image_validation(image_name):
                 image_name_org = imageService.save_image(image_name, blob)
@@ -71,12 +69,6 @@ def upload_image():
     except Exception as e:
         current_app.logger.error("----------Internal Error: {}----------".format(str(e)))
         return render_template(IMAGE_UPLOAD_PAGE, form=upload_image_form, error=INTERNAL_ERROR_MSG), 500
-
-
-# @imageManager.route('/uploads/<path:filename>')
-# @login_required
-# def download_file(filename):
-#     return current_app.config["S3_BUCKET_LOCATION"] + current_user.username + "/" + filename
 
 
 @imageManager.route('/images/<path:filename>')
