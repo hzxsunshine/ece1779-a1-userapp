@@ -16,5 +16,5 @@ class Config(object):
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=25)
     S3_BUCKET_LOCATION = "https://2019fall-ece1779a2.s3.amazonaws.com/"
-    S3_BUCKET_Name = "2019fall-ece1779a2"
+    S3_BUCKET_NAME = "2019fall-ece1779a2"
 
